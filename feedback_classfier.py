@@ -56,7 +56,17 @@ from sklearn.metrics import accuracy_score
 
 # Classification for New Feedbacks
 
-new_feedback = ['I am not satisfied']
+# Importing Feedback from App (Server Side Json)
+import requests
+
+url = "https://peadforg.000webhostapp.com/findway/findway/User.php"
+jsonUrl = requests.get(url)
+
+data = jsonUrl.json()
+
+grabbedFeedback = data[len(data)-1]['feedback']
+
+new_feedback = [grabbedFeedback]
 #Count Vectorization
 X_new_counts = count_vect.transform(new_feedback)
 #TFIDF (Term Frequency)
@@ -82,14 +92,14 @@ else:
 from flask import  Flask, request
 from flask_restful import  Resource, Api
 # from json import  dumps
-from flask import jsonify
+from flask import jsonify 
 
 app = Flask(__name__)
 api = Api(app)
 
 class Classfier(Resource):
     def get(self):
-        result = {'classification':[ classified_value]}
+        result = {'classification': classified_value}
         return jsonify(result)
 
 
