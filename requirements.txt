@@ -1,6 +1,5 @@
-sklearn
-flask 
-flask-jsonpify 
-flask-sqlalchemy 
-flask-restful
+Flask
+Flask-RESTful
+gunicorn==19.9.0
 requests
+sklearn

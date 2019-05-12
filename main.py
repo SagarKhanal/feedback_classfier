@@ -56,54 +56,56 @@ from sklearn.metrics import accuracy_score
 
 # Classification for New Feedbacks
 
-# Importing Feedback from App (Server Side Json)
 import requests
 
-url = "https://peadforg.000webhostapp.com/findway/findway/User.php"
-jsonUrl = requests.get(url)
-
-data = jsonUrl.json()
-
-grabbedFeedback = data[len(data)-1]['feedback']
-
-new_feedback = [grabbedFeedback]
-#Count Vectorization
-X_new_counts = count_vect.transform(new_feedback)
-#TFIDF (Term Frequency)
-X_new_tfidf= tfidf_transformer.transform(X_new_counts)
-
-predicted=clf.predict(X_new_tfidf)
-
-#Gives the array value of predicted classification
-print(predicted)
-
+# classified_value
 classified_value = ''
 
-if(1 in predicted):
-    classified_value="Positive"
-else:
-    classified_value="Negative"
+def onRun(grabbedFeedback):
+    # url = "https://peadforg.000webhostapp.com/findway/findway/User.php"
+    # jsonUrl = requests.get(url)
+    # data = jsonUrl.json()
 
-# classified_value
+    # grabbedFeedback = data[len(data)-1]['feedback']
+
+    new_feedback = [grabbedFeedback]
+    #Count Vectorization
+    X_new_counts = count_vect.transform(new_feedback)
+    #TFIDF (Term Frequency)
+    X_new_tfidf= tfidf_transformer.transform(X_new_counts)
+
+    predicted=clf.predict(X_new_tfidf)
+
+    #Gives the array value of predicted classification
+    # print(predicted)
+    global classified_value
+    if(1 in predicted):
+        classified_value="Positive"
+        
+    else:
+        classified_value="Negative"
 
 
 #START OF API
 
-from flask import  Flask, request
-from flask_restful import  Resource, Api
+from flask import  Flask
+from flask_restful import  Resource
 # from json import  dumps
-from flask import jsonify 
+from flask import jsonify
 
 app = Flask(__name__)
-api = Api(app)
-
-class Classfier(Resource):
-    def get(self):
-        result = {'classification': classified_value}
-        return jsonify(result)
 
 
-api.add_resource(Classfier,'/classify') #Route 1
+@app.route('/<feedback>',methods=['GET','POST'])
+def index(feedback):
+    some_json = str(feedback)
+    onRun(some_json)
+    result={'classification':classified_value}
+    return jsonify(result), 201
+
+@app.route('/',methods=['GET'])
+def default():
+    return jsonify({'Message':'Pass Feedback at the end of the link with / character'})
 
 if __name__ == '__main__':
     app.run(port='5002')
