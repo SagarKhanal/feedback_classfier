@@ -2,6 +2,7 @@
 
 #Importing Datasets Offline
 import sklearn.datasets as skd
+import numpy as np
 
 # Positive and Negative Category
 categories = ['com.positive','com.negative']
@@ -60,6 +61,7 @@ import requests
 
 # classified_value
 classified_value = ''
+# score = ''
 
 def onRun(grabbedFeedback):
     # url = "https://peadforg.000webhostapp.com/findway/findway/User.php"
@@ -74,16 +76,16 @@ def onRun(grabbedFeedback):
     #TFIDF (Term Frequency)
     X_new_tfidf= tfidf_transformer.transform(X_new_counts)
 
-    predicted=clf.predict(X_new_tfidf)
+    predicted_new=clf.predict(X_new_tfidf)
 
     #Gives the array value of predicted classification
     # print(predicted)
     global classified_value
-    if(1 in predicted):
+    if(1 in predicted_new):
         classified_value="Positive"
-        
     else:
         classified_value="Negative"
+
 
 
 #START OF API
@@ -100,7 +102,7 @@ app = Flask(__name__)
 def index(feedback):
     some_json = str(feedback)
     onRun(some_json)
-    result={'classification':classified_value}
+    result={'data':[{'classification':classified_value}]}
     return jsonify(result), 201
 
 @app.route('/',methods=['GET'])
