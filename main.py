@@ -108,14 +108,14 @@ def index(feedback):
         f=open('feedback/train/com.positive/newFeedback','a')
         f.writelines(feedback.strip('favicon.ico')+"\n")
         f.close
-        msg="Files added"
+        msg="Positive"
     elif(negative>positive):
         f=open('feedback/train/com.negative/newFeedback','a')
         f.writelines(feedback.strip('favicon.ico')+"\n")
         f.close
-        msg="Files added"
+        msg="Negative"
 
-    result={'data':[{'classification':classified_value,"operation":msg}]}
+    result={'data':[{'classification':classified_value,"api_classification":msg}]}
 
     return jsonify(result), 201
 
