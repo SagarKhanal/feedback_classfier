@@ -119,7 +119,7 @@ def index(feedback):
 
 @app.route('/',methods=['GET'])
 def default():
-    return jsonify({'Message':'Pass Feedback at the end of the link with / character'})
+    return jsonify({'Message':'Pass Feedback at the end of the link'})
 
 if __name__ == '__main__':
     app.run(port='5002')
