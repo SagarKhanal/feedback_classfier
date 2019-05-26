@@ -2,6 +2,7 @@
 
 #Importing Datasets Offline
 import sklearn.datasets as skd
+import numpy as np
 
 # Positive and Negative Category
 categories = ['com.positive','com.negative']
@@ -24,6 +25,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 count_vect = CountVectorizer()
 
 X_train_tf = count_vect.fit_transform(feedback_train.data)
+# X_train_tf.shape
 
 #Tfidf Transformer (Term Frequency)
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -32,6 +34,7 @@ tfidf_transformer = TfidfTransformer()
 
 X_train_tfidf = tfidf_transformer.fit_transform(X_train_tf)
 
+#X_train_tfidf.shape
 
 
 # MultinomialNB used for the features with discrete values like word count 1,2,3.
@@ -58,8 +61,15 @@ import requests
 
 # classified_value
 classified_value = ''
+# score = ''
 
 def onRun(grabbedFeedback):
+    # url = "https://peadforg.000webhostapp.com/findway/findway/User.php"
+    # jsonUrl = requests.get(url)
+    # data = jsonUrl.json()
+
+    # grabbedFeedback = data[len(data)-1]['feedback']
+
     new_feedback = [grabbedFeedback]
     #Count Vectorization
     X_new_counts = count_vect.transform(new_feedback)
@@ -76,6 +86,10 @@ def onRun(grabbedFeedback):
     else:
         classified_value="Negative"
 
+#ParallelDots API
+import paralleldots
+paralleldots.set_api_key("xSDCayg76qWgYYbAQ0r5BtmO4lUmAKTOauhMl6dopCQ")
+lang_code = "en"
 
 
 #START OF API
@@ -84,6 +98,8 @@ from flask import  Flask
 from flask_restful import  Resource
 # from json import  dumps
 from flask import jsonify
+from urllib.request import urlopen
+import json
 
 app = Flask(__name__)
 
@@ -92,7 +108,21 @@ app = Flask(__name__)
 def index(feedback):
     some_json = str(feedback)
     onRun(some_json)
+    response = paralleldots.sentiment(feedback,lang_code)
+    responseData = json.dumps(response)
+    positive = json.loads(responseData)['sentiment']['positive']
+    negative = json.loads(responseData)['sentiment']['negative']
+    if(positive>negative):
+        f=open('feedback/train/com.positive/newFeedback','a')
+        f.writelines(feedback.strip('favicon.ico')+"\n")
+        f.close
+    elif(negative>positive):
+        f=open('feedback/train/com.negative/newFeedback','a')
+        f.writelines(feedback.strip('favicon.ico')+"\n")
+        f.close
+
     result={'data':[{'classification':classified_value}]}
+
     return jsonify(result), 201
 
 @app.route('/',methods=['GET'])
