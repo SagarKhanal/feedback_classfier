@@ -25,7 +25,6 @@ from sklearn.feature_extraction.text import CountVectorizer
 count_vect = CountVectorizer()
 
 X_train_tf = count_vect.fit_transform(feedback_train.data)
-# X_train_tf.shape
 
 #Tfidf Transformer (Term Frequency)
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -64,12 +63,6 @@ classified_value = ''
 # score = ''
 
 def onRun(grabbedFeedback):
-    # url = "https://peadforg.000webhostapp.com/findway/findway/User.php"
-    # jsonUrl = requests.get(url)
-    # data = jsonUrl.json()
-
-    # grabbedFeedback = data[len(data)-1]['feedback']
-
     new_feedback = [grabbedFeedback]
     #Count Vectorization
     X_new_counts = count_vect.transform(new_feedback)
@@ -79,7 +72,6 @@ def onRun(grabbedFeedback):
     predicted_new=clf.predict(X_new_tfidf)
 
     #Gives the array value of predicted classification
-    # print(predicted)
     global classified_value
     if(1 in predicted_new):
         classified_value="Positive"
