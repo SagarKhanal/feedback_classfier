@@ -2,7 +2,6 @@
 
 #Importing Datasets Offline
 import sklearn.datasets as skd
-import numpy as np
 
 # Positive and Negative Category
 categories = ['com.positive','com.negative']
