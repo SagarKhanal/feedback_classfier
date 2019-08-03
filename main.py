@@ -78,9 +78,9 @@ def onRun(grabbedFeedback):
         classified_value="Negative"
 
 #ParallelDots API
-import paralleldots
-paralleldots.set_api_key("xSDCayg76qWgYYbAQ0r5BtmO4lUmAKTOauhMl6dopCQ")
-lang_code = "en"
+# import paralleldots
+# paralleldots.set_api_key("xSDCayg76qWgYYbAQ0r5BtmO4lUmAKTOauhMl6dopCQ")
+# lang_code = "en"
 
 
 #START OF API
@@ -99,22 +99,22 @@ app = Flask(__name__)
 def index(feedback):
     some_json = str(feedback)
     onRun(some_json)
-    response = paralleldots.sentiment(feedback,lang_code)
-    responseData = json.dumps(response)
-    positive = json.loads(responseData)['sentiment']['positive']
-    negative = json.loads(responseData)['sentiment']['negative']
-    if(positive>negative):
-        f=open('feedback/train/com.positive/newFeedback','a')
-        f.writelines(feedback.strip('favicon.ico')+"\n")
-        f.close
-        msg="Positive"
-    elif(negative>positive):
-        f=open('feedback/train/com.negative/newFeedback','a')
-        f.writelines(feedback.strip('favicon.ico')+"\n")
-        f.close
-        msg="Negative"
+#     response = paralleldots.sentiment(feedback,lang_code)
+#     responseData = json.dumps(response)
+#     positive = json.loads(responseData)['sentiment']['positive']
+#     negative = json.loads(responseData)['sentiment']['negative']
+#     if(positive>negative):
+#         f=open('feedback/train/com.positive/newFeedback','a')
+#         f.writelines(feedback.strip('favicon.ico')+"\n")
+#         f.close
+#         msg="Positive"
+#     elif(negative>positive):
+#         f=open('feedback/train/com.negative/newFeedback','a')
+#         f.writelines(feedback.strip('favicon.ico')+"\n")
+#         f.close
+#         msg="Negative"
 
-    result={'data':[{'classification':classified_value,"api_classification":msg}]}
+    result={'data':[{'classification':classified_value,"api_classification":"api exceeded"}]}
 
     return jsonify(result), 201
 
